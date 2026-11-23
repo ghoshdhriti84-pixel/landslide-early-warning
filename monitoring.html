@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Data Monitoring{% endblock %}
+{% block heading %}Data Monitoring &amp; Entry{% endblock %}
+{% block subheading %}Submit environmental readings — the dashboard, map, charts and alerts update immediately{% endblock %}
+
+{% block content %}
+<section class="grid grid-2">
+  <article class="card">
+    <h2 class="card-title">Enter Environmental Readings</h2>
+    <form id="readingForm" novalidate>
+      <div class="form-row">
+        <label for="location_code">Monitoring location *</label>
+        <select id="location_code" name="location_code" required>
+          <option value="">Loading locations…</option>
+        </select>
+        <span class="error-text" data-error="location_code"></span>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-row">
+          <label for="temperature">Temperature (°C) *</label>
+          <input type="number" step="0.1" id="temperature" name="temperature" placeholder="e.g. 24.5" required />
+          <span class="error-text" data-error="temperature"></span>
+        </div>
+        <div class="form-row">
+          <label for="rainfall_24h">Rainfall — last 24 h (mm) *</label>
+          <input type="number" step="0.1" id="rainfall_24h" name="rainfall_24h" placeholder="e.g. 120" required />
+          <span class="error-text" data-error="rainfall_24h"></span>
+        </div>
+        <div class="form-row">
+          <label for="humidity">Humidity (%) *</label>
+          <input type="number" step="0.1" id="humidity" name="humidity" placeholder="e.g. 88" required />
+          <span class="error-text" data-error="humidity"></span>
+        </div>
+        <div class="form-row">
+          <label for="soil_moisture">Soil moisture (%) *</label>
+          <input type="number" step="0.1" id="soil_moisture" name="soil_moisture" placeholder="e.g. 65" required />
+          <span class="error-text" data-error="soil_moisture"></span>
+        </div>
+      </div>
+
+      <p class="muted small">
+        3-day antecedent rainfall is computed automatically from stored readings for the selected
+        location. Valid ranges: temperature −20…55 °C, rainfall 0…1000 mm, humidity 0…100 %,
+        soil moisture 0…100 %.
+      </p>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit" id="submitReading">
+          <span class="spinner" hidden></span><span class="btn-label">Submit reading</span>
+        </button>
+        <button class="btn btn-ghost" type="button" id="fillSampleBtn">Fill example values</button>
+        <button class="btn btn-ghost" type="reset" id="resetBtn">Clear form</button>
+      </div>
+      <div class="form-msg" id="formMsg" role="status"></div>
+    </form>
+  </article>
+
+  <article class="card">
+    <div class="card-head">
+      <h2 class="card-title">Latest Stored Readings</h2>
+      <button class="btn btn-ghost btn-sm" id="readingsRefreshBtn" type="button">Refresh</button>
+    </div>
+    <p class="muted small">
+      Rows entered here are stored in SQLite with <code>data_source = observed</code>. Seeded rows are
+      marked <code>simulated</code>.
+    </p>
+    <div class="table-scroll">
+      <table class="table">
+        <thead>
+          <tr><th>Location</th><th>Temp °C</th><th>Rain 24h</th><th>Rain 72h</th><th>Hum %</th>
+              <th>Soil %</th><th>Risk</th><th>Source</th><th>Time</th></tr>
+        </thead>
+        <tbody id="readingsTable">
+          <tr><td colspan="9" class="muted small">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </article>
+</section>
+
+<section class="grid grid-2">
+  <article class="card">
+    <h2 class="card-title">Result of Last Submission</h2>
+    <div id="submissionResult" class="detail-box">
+      <p class="muted small">No reading submitted yet in this session.</p>
+    </div>
+  </article>
+  <article class="card">
+    <h2 class="card-title">Per-Location Trend</h2>
+    <div class="form-row">
+      <label for="trendLocation">Location</label>
+      <select id="trendLocation"></select>
+    </div>
+    <div class="chart-box"><canvas id="chartLocationTrend" aria-label="Per-location trend chart"></canvas></div>
+  </article>
+</section>
+
+<section class="card">
+  <h2 class="card-title">Data-Quality Notes</h2>
+  <ul class="small muted">
+    <li>Invalid or out-of-range values are rejected with a clear message — nothing is stored.</li>
+    <li>Missing fields are reported as “required”; no value is guessed or invented.</li>
+    <li>Locations without any reading are shown as “No data” rather than estimated.</li>
+    <li>Rainfall history shorter than 72 hours is flagged as sparse in the response.</li>
+  </ul>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/monitoring.js') }}"></script>
+{% endblock %}

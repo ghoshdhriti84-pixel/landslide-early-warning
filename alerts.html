@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Early Warnings{% endblock %}
+{% block heading %}Early Warning System{% endblock %}
+{% block subheading %}Alerts generated when configured risk thresholds are crossed{% endblock %}
+
+{% block content %}
+<section class="grid grid-2">
+  <article class="card">
+    <h2 class="card-title">Active Alert Summary</h2>
+    <div class="alert-summary" id="alertSummary">
+      <div class="sum-box" data-level="Advisory"><span class="sum-num" id="sumAdvisory">0</span><span>Advisory</span></div>
+      <div class="sum-box" data-level="Warning"><span class="sum-num" id="sumWarning">0</span><span>Warning</span></div>
+      <div class="sum-box" data-level="Severe"><span class="sum-num" id="sumSevere">0</span><span>Severe</span></div>
+    </div>
+    <p class="muted small" id="alertNotice">
+      Alerts are produced by a configurable rule on a demonstration risk index.
+    </p>
+  </article>
+
+  <article class="card">
+    <div class="card-head">
+      <h2 class="card-title">Configured Thresholds</h2>
+      <span class="muted small">Edit in app.py → ALERT_THRESHOLDS</span>
+    </div>
+    <table class="table">
+      <thead><tr><th>Alert level</th><th>Risk score</th><th>Recommended action (short)</th></tr></thead>
+      <tbody id="thresholdRows">
+        <tr><td colspan="3" class="muted small">Loading…</td></tr>
+      </tbody>
+    </table>
+  </article>
+</section>
+
+<section class="card">
+  <div class="card-head wrap">
+    <h2 class="card-title">Alert Log</h2>
+    <div class="head-actions">
+      <label class="check-inline"><input type="checkbox" id="showAck" /> Show acknowledged</label>
+      <button class="btn btn-ghost btn-sm" id="alertsRefreshBtn" type="button">Refresh</button>
+      <button class="btn btn-primary btn-sm" id="ackAllPageBtn" type="button">Mark all read</button>
+    </div>
+  </div>
+  <div id="alertLog" class="alert-list">
+    <p class="muted small">Loading alerts…</p>
+  </div>
+</section>
+
+<section class="card">
+  <h2 class="card-title">Safety Guidance by Alert Level</h2>
+  <div class="grid grid-3">
+    <div class="card inner" data-level="Advisory">
+      <h3>Advisory</h3>
+      <p class="small">Stay alert. Avoid steep cut slopes, fresh road cuttings and gully beds during
+        continued rainfall. Keep monitoring local weather updates.</p>
+    </div>
+    <div class="card inner" data-level="Warning">
+      <h3>Warning</h3>
+      <p class="small">Prepare to move. Shift to flatter ground if rainfall continues; keep documents,
+        medicines and a torch ready; avoid hill roads and watch for cracks, tilting trees or new springs.</p>
+    </div>
+    <div class="card inner" data-level="Severe">
+      <h3>Severe</h3>
+      <p class="small">Act now. Evacuate steep-slope and low-lying settlements, move to a pre-identified
+        safe shelter and follow district administration instructions. Call 112 in an emergency.</p>
+    </div>
+  </div>
+  <p class="muted small">
+    These are general precautions used by the prototype. Official evacuation orders come only from
+    government authorities — this prototype is not an emergency-warning service.
+  </p>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/alerts.js') }}"></script>
+{% endblock %}

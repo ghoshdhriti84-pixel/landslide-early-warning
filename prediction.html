@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Prediction{% endblock %}
+{% block heading %}Prediction Module{% endblock %}
+{% block subheading %}Random Forest classifier with transparent, honestly-reported results{% endblock %}
+
+{% block content %}
+<section class="card" id="modeBanner">
+  <h2 class="card-title">Model Status</h2>
+  <p class="muted small" id="modeText">Loading model information…</p>
+  <div class="grid grid-3 model-stats" id="modelStats"></div>
+  <p class="muted small" id="metricsNote"></p>
+</section>
+
+<section class="grid grid-2">
+  <article class="card">
+    <h2 class="card-title">Run a Prediction</h2>
+    <form id="predictForm" novalidate>
+      <div class="form-row">
+        <label for="pLocation">Monitoring location (sets terrain susceptibility)</label>
+        <select id="pLocation" name="location_code">
+          <option value="">— choose a location —</option>
+        </select>
+      </div>
+
+      <label class="check-inline">
+        <input type="checkbox" id="useLatest" checked />
+        Use the latest stored reading for this location when a field is left blank
+      </label>
+
+      <div class="form-grid">
+        <div class="form-row">
+          <label for="pRain24">Rainfall 24 h (mm)</label>
+          <input type="number" step="0.1" id="pRain24" name="rainfall_24h" placeholder="auto / enter" />
+          <span class="error-text" data-error="rainfall_24h"></span>
+        </div>
+        <div class="form-row">
+          <label for="pRain72">Rainfall 72 h (mm)</label>
+          <input type="number" step="0.1" id="pRain72" name="rainfall_72h" placeholder="auto / enter" />
+          <span class="error-text" data-error="rainfall_72h"></span>
+        </div>
+        <div class="form-row">
+          <label for="pHum">Humidity (%)</label>
+          <input type="number" step="0.1" id="pHum" name="humidity" placeholder="auto / enter" />
+          <span class="error-text" data-error="humidity"></span>
+        </div>
+        <div class="form-row">
+          <label for="pSoil">Soil moisture (%)</label>
+          <input type="number" step="0.1" id="pSoil" name="soil_moisture" placeholder="auto / enter" />
+          <span class="error-text" data-error="soil_moisture"></span>
+        </div>
+        <div class="form-row">
+          <label for="pTemp">Temperature (°C)</label>
+          <input type="number" step="0.1" id="pTemp" name="temperature" placeholder="auto / enter" />
+          <span class="error-text" data-error="temperature"></span>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit" id="predictBtn">
+          <span class="spinner" hidden></span><span class="btn-label">Predict risk category</span>
+        </button>
+      </div>
+      <div class="form-msg" id="predictMsg" role="status"></div>
+    </form>
+  </article>
+
+  <article class="card">
+    <h2 class="card-title">Prediction Result</h2>
+    <div id="predictResult" class="detail-box">
+      <p class="muted small">Run a prediction to see the predicted category and the factors behind it.</p>
+    </div>
+  </article>
+</section>
+
+<section class="grid grid-2">
+  <article class="card">
+    <h2 class="card-title">Global Feature Importance (learned)</h2>
+    <div class="chart-box"><canvas id="chartImportance" aria-label="Feature importance chart"></canvas></div>
+    <p class="muted small" id="importanceNote">Feature importance shows how much each input influenced the trained model overall.</p>
+  </article>
+  <article class="card">
+    <h2 class="card-title">Demonstration Index vs Learned Model</h2>
+    <div class="chart-box"><canvas id="chartCompare" aria-label="Comparison of heuristic index and model output"></canvas></div>
+    <ul class="small muted" id="compareList"></ul>
+  </article>
+</section>
+
+<section class="card">
+  <h2 class="card-title">Method &amp; Honest Limitations</h2>
+  <div class="grid grid-2">
+    <div>
+      <h3 class="mini-title">How a prediction is produced</h3>
+      <ol class="small">
+        <li>Inputs are validated and combined with the location's static terrain susceptibility.</li>
+        <li>A separate transparent weighted index produces an independent reference score.</li>
+        <li>A Random Forest classifier classifies the reading into Low / Moderate / High / Very High.</li>
+        <li>Per-reading influences are approximated as importance × standardised deviation from the
+            training mean, normalised to 100 %.</li>
+      </ol>
+    </div>
+    <div>
+      <h3 class="mini-title">What this is NOT</h3>
+      <ul class="small">
+        <li>Not a physical or statistical landslide-hazard model (no slope stability, geology or
+            infiltration modelling).</li>
+        <li>Not trained on field landslide records unless you place your own labelled
+            <code>data/dataset.csv</code> in the data folder.</li>
+        <li>No accuracy figure is claimed from synthetic data — any metric shown is computed on this
+            project's own synthetic labels and describes only the reproduction of that rule.</li>
+        <li>Not usable for evacuation or life-safety decisions.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/prediction.js') }}"></script>
+{% endblock %}

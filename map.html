@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Risk Map{% endblock %}
+{% block heading %}Interactive Landslide Risk Map{% endblock %}
+{% block subheading %}Sample monitoring locations across the North Eastern Region, coloured by current risk level{% endblock %}
+
+{% block content %}
+<section class="card">
+  <div class="card-head wrap">
+    <div>
+      <h2 class="card-title">North Eastern Region — Monitoring Network</h2>
+      <p class="muted small">
+        Markers are coloured by the latest risk level. Click any marker for readings and timestamp.
+        Map tiles © OpenStreetMap contributors.
+      </p>
+    </div>
+    <div class="head-actions">
+      <label class="field-inline">
+        <span>Filter by risk</span>
+        <select id="riskFilter">
+          <option value="all">All levels</option>
+          <option value="Low">Low</option>
+          <option value="Moderate">Moderate</option>
+          <option value="High">High</option>
+          <option value="Very High">Very High</option>
+        </select>
+      </label>
+      <button class="btn btn-ghost btn-sm" id="mapRefreshBtn" type="button">Refresh</button>
+    </div>
+  </div>
+
+  <div class="legend" aria-label="Risk legend">
+    <span class="legend-item"><i class="swatch" data-level="Low"></i> Low (0–30)</span>
+    <span class="legend-item"><i class="swatch" data-level="Moderate"></i> Moderate (30–55)</span>
+    <span class="legend-item"><i class="swatch" data-level="High"></i> High (55–75)</span>
+    <span class="legend-item"><i class="swatch" data-level="Very High"></i> Very High (75–100)</span>
+    <span class="legend-item"><i class="swatch" data-level="No data"></i> No data</span>
+    <span class="legend-item legend-note">Sample / simulated data</span>
+  </div>
+
+  <div class="map-layout">
+    <div id="map" class="map-frame" role="application" aria-label="Risk map of Northeast India"></div>
+    <aside class="map-side">
+      <h3 class="side-title">Location detail</h3>
+      <div id="mapDetail" class="detail-box">
+        <p class="muted small">Select a marker on the map (or a row below) to see its readings.</p>
+      </div>
+      <h3 class="side-title">All locations</h3>
+      <ul id="mapList" class="loc-list"><li class="muted small">Loading…</li></ul>
+    </aside>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+{% endblock %}

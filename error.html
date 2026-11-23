@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Error {{ code }}{% endblock %}
+{% block heading %}Error {{ code }}{% endblock %}
+{% block subheading %}The requested page could not be completed{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h2 class="card-title">What happened?</h2>
+  <p>{{ message }}</p>
+  <div class="quick-actions">
+    <a class="btn btn-primary" href="/">Back to dashboard</a>
+    <a class="btn btn-ghost" href="/monitoring">Enter a reading</a>
+  </div>
+</section>
+{% endblock %}

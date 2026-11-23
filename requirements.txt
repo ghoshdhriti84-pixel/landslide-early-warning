@@ -1,0 +1,9 @@
+# AI-Based Early Warning and Landslide Risk Monitoring System (NER India)
+# Install with:  pip install -r requirements.txt
+#
+# Free / open-source packages only. No API keys or paid services are needed.
+
+Flask>=3.0,<4.0          # web framework (backend + page rendering)
+numpy>=1.26              # numerical helpers used by the model pipeline
+pandas>=2.2              # tabular data handling
+scikit-learn>=1.4        # Random Forest classifier (prediction module)

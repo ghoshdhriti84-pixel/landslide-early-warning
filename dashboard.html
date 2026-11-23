@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block heading %}Landslide Risk Dashboard{% endblock %}
+{% block subheading %}Real-time style overview of monitored locations in the North Eastern Region of India{% endblock %}
+
+{% block content %}
+<section class="grid grid-4" aria-label="Current environmental readings">
+  <article class="card metric">
+    <div class="metric-head"><span class="metric-ico">🌡️</span> Temperature</div>
+    <div class="metric-value"><span id="mTemp">—</span><small>°C</small></div>
+    <div class="metric-foot">Regional average</div>
+  </article>
+  <article class="card metric">
+    <div class="metric-head"><span class="metric-ico">🌧️</span> Rainfall (24 h)</div>
+    <div class="metric-value"><span id="mRain">—</span><small>mm</small></div>
+    <div class="metric-foot">Regional average</div>
+  </article>
+  <article class="card metric">
+    <div class="metric-head"><span class="metric-ico">💧</span> Humidity</div>
+    <div class="metric-value"><span id="mHum">—</span><small>%</small></div>
+    <div class="metric-foot">Regional average</div>
+  </article>
+  <article class="card metric">
+    <div class="metric-head"><span class="metric-ico">🪨</span> Soil Moisture</div>
+    <div class="metric-value"><span id="mSoil">—</span><small>%</small></div>
+    <div class="metric-foot">Regional average</div>
+  </article>
+</section>
+
+<section class="grid grid-3">
+  <article class="card risk-card">
+    <h2 class="card-title">Overall Landslide Risk Level</h2>
+    <div class="risk-gauge">
+      <div class="risk-pill" id="riskPill" data-level="No data">No data</div>
+      <div class="risk-score">Index <strong id="riskScore">—</strong><span>/100</span></div>
+    </div>
+    <p class="muted small">
+      Regional indicator = average of the latest per-location scores, banded on a 0–100
+      demonstration index. Peak-risk location is shown below.
+    </p>
+    <div class="peak" id="peakBox">
+      <span class="muted small">Highest-risk location</span>
+      <strong id="peakName">—</strong>
+      <span class="muted small" id="peakMeta"></span>
+    </div>
+  </article>
+
+  <article class="card">
+    <h2 class="card-title">Coverage &amp; Alerts</h2>
+    <div class="stat-row">
+      <div class="stat">
+        <span class="stat-num" id="statLocations">—</span>
+        <span class="stat-label">Monitored locations</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num danger" id="statAlerts">—</span>
+        <span class="stat-label">Active alerts</span>
+      </div>
+    </div>
+    <div class="dist" id="riskDistribution" aria-label="Risk level distribution"></div>
+    <p class="muted small" id="lastUpdate">Last update: —</p>
+  </article>
+
+  <article class="card">
+    <h2 class="card-title">Risk Level by Location</h2>
+    <div class="chart-box tall"><canvas id="chartRiskBar" aria-label="Risk score by location chart"></canvas></div>
+  </article>
+</section>
+
+<section class="grid grid-2">
+  <article class="card">
+    <div class="card-head">
+      <h2 class="card-title">Rainfall &amp; Risk Trend</h2>
+      <span class="muted small" id="trendNote">Last 7 days</span>
+    </div>
+    <div class="chart-box"><canvas id="chartTrend" aria-label="Rainfall and risk trend chart"></canvas></div>
+  </article>
+
+  <article class="card">
+    <h2 class="card-title">Risk Band Distribution</h2>
+    <div class="chart-box"><canvas id="chartRiskPie" aria-label="Risk band distribution chart"></canvas></div>
+  </article>
+</section>
+
+<section class="card" id="dashboardAlerts" aria-label="Notification panel">
+  <div class="card-head">
+    <h2 class="card-title">🔔 Notification Panel — Latest Alerts</h2>
+    <div class="head-actions">
+      <button class="btn btn-ghost btn-sm" id="refreshAlertsBtn" type="button">Refresh</button>
+      <a class="btn btn-primary btn-sm" href="/alerts">View all</a>
+    </div>
+  </div>
+  <div id="dashAlertList" class="alert-list">
+    <p class="muted small">Loading alerts…</p>
+  </div>
+</section>
+
+<section class="card">
+  <h2 class="card-title">Quick Actions</h2>
+  <div class="quick-actions">
+    <a class="btn btn-primary" href="/monitoring">➕ Enter new reading</a>
+    <a class="btn btn-ghost" href="/map">🗺️ Open risk map</a>
+    <a class="btn btn-ghost" href="/prediction">🧠 Run prediction</a>
+    <button class="btn btn-ghost" id="refreshAllBtn" type="button">🔄 Refresh dashboard</button>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
